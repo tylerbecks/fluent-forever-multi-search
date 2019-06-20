@@ -17,31 +17,39 @@ function searchItalian(language, word) {
   openGoogleImages(word, language);
 }
 
-function openCollinsDictionary(searchWord, language) {
+// a website that has IPA definitions of words
+function openCollinsDictionary(word, language) {
   const longLanguage = LANGUAGE_HASH[language];
-  window.open(
-    `https://www.collinsdictionary.com/dictionary/${longLanguage}-english/${searchWord}`
-  );
+  const wordParts = word.split(' ');
+  // Collins Dictionary only has records for individual words.
+  // For example, if word is "Happy Birthday", Collins will not work.
+  // So, instead, search for "Happy" and search for "Birthday"
+  wordParts.forEach((wordPart) => {
+    window.open(
+      `https://www.collinsdictionary.com/dictionary/${longLanguage}-english/${wordPart}`
+    );
+  })
 }
 
-function openGoogleImages(searchWord, language) {
+function openGoogleImages(word, language) {
   window.open(
-    `https://www.google.${language}/search?tbm=isch&sout=1&q=${searchWord}`,
+    `https://www.google.${language}/search?tbm=isch&sout=1&q=${word}`,
     'images'
   );
 }
 
-function openForvo(searchWord, language) {
-  window.open(`http://www.forvo.com/word/${searchWord}/#${language}`, 'forvo');
+// a website that has recordings of native speakers pronouncing words
+function openForvo(word, language) {
+  window.open(`http://www.forvo.com/word/${word}/#${language}`, 'forvo');
 }
 
-// function openWordReference(searchWord) {
-//   window.open(`http://www.wordreference.com/iten/${searchWord}`, 'wordreference');
+// function openWordReference(word) {
+//   window.open(`http://www.wordreference.com/iten/${word}`, 'wordreference');
 // }
 
-// function openGoogleTranslate(searchWord, language) {
+// function openGoogleTranslate(word, language) {
 //   window.open(
-//     `https://translate.google.com/#view=home&op=translate&sl=${language}&tl=en&text=${searchWord}`,
+//     `https://translate.google.com/#view=home&op=translate&sl=${language}&tl=en&text=${word}`,
 //     'translate'
 //   );
 // }

@@ -1,10 +1,9 @@
-/**
- * WordPicker that displays the list of the 625 most used words.
- */
-
 import React, { PureComponent } from 'react'
 // import { StaticQuery, graphql } from "gatsby"
 import { Button, Card, Label } from 'semantic-ui-react'
+import { searchWord } from '../utils/seachWord'
+
+var LANGUAGE = 'it';
 
 const WORDS = [
   { word: "actor" },
@@ -16,6 +15,9 @@ const WORDS = [
   { word: "clean", hint: "adjective" },
 ]
 
+/**
+ * WordPicker that displays the list of the 625 most used words.
+ */
 export default class WordPicker extends PureComponent {
   state = {
     index: 0,
@@ -43,6 +45,11 @@ export default class WordPicker extends PureComponent {
     });
   }
 
+  handleClickSearch = () => {
+    const { word } = this.currentWord;
+    searchWord(LANGUAGE, word);
+  }
+
   get isPrevDisabled() {
     return this.state.index === 0;
   }
@@ -51,8 +58,13 @@ export default class WordPicker extends PureComponent {
     return this.state.index === WORDS.length - 1;
   }
 
+  get currentWord() {
+    return WORDS[this.state.index];
+  }
+
   render() {
-    const { word, hint } = WORDS[this.state.index];
+    const { word, hint } = this.currentWord;
+
     return (
       // <StaticQuery
       //   query={graphql`
@@ -72,18 +84,26 @@ export default class WordPicker extends PureComponent {
       //     </div>
       //   )}
       // />
-      <Card raised>
-        <Card.Content>
+      <Card>
+        <Card.Content style={{ textAlign: 'center' }}>
           <Card.Header content={word} />
           {/* <Card.Meta>{flashCardHelp}</Card.Meta> */}
           <Card.Description>{this.props.description}</Card.Description>
         </Card.Content>
-        <Card.Content extra>
+        <Card.Content extra style={{ textAlign: 'center' }}>
           <Label content={hint} ribbon />
+          <div>
+            <Button
+              content="Search!"
+              onClick={this.handleClickSearch}
+              style={{ marginBottom: 16 }}
+            />
+          </div>
           <Button
             content="Prev"
             disabled={this.isPrevDisabled}
             onClick={this.handleClickPrev}
+            style={{ marginRight: 8 }}
           />
           <Button
             content="Next"

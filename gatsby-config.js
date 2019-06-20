@@ -1,8 +1,8 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Default Starter`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
-    author: `@gatsbyjs`,
+    title: `Fluent Forever Multi-Search`,
+    description: `An modernized, optimized multi search tool for the Fluent Forever flashcard creation process`,
+    author: `Tyler Becks`,
   },
   plugins: [
     `gatsby-plugin-typescript`,

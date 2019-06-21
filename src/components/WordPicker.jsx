@@ -1,19 +1,9 @@
 import React, { PureComponent } from "react"
-// import { StaticQuery, graphql } from "gatsby"
-import { Button, Icon, Card, Label } from "semantic-ui-react"
+import { StaticQuery, graphql } from "gatsby"
+import { Button, Card, Label } from "semantic-ui-react"
 import { searchWord } from "../utils/seachWord"
 
-var LANGUAGE = "it"
-
-const WORDS = [
-  { word: "actor" },
-  { word: "black" },
-  { word: "clay" },
-  { word: "disease" },
-  { word: "adjective" },
-  { word: "blind", hint: "adjective" },
-  { word: "clean", hint: "adjective" },
-]
+const LANGUAGE = "it"
 
 /**
  * WordPicker that displays the list of the 625 most used words.
@@ -25,7 +15,7 @@ export default class WordPicker extends PureComponent {
 
   handleClickNext = () => {
     this.setState(({ index }) => {
-      if (index === WORDS.length - 1)
+      if (index === this.words.length - 1)
         throw Error("incremented index beyond length of words list!")
 
       return {
@@ -44,8 +34,7 @@ export default class WordPicker extends PureComponent {
     })
   }
 
-  handleClickSearch = () => {
-    const { word } = this.currentWord
+  handleClickSearch = (word) => {
     searchWord(LANGUAGE, word)
   }
 
@@ -54,62 +43,65 @@ export default class WordPicker extends PureComponent {
   }
 
   get isNextDisabled() {
-    return this.state.index === WORDS.length - 1
+    return this.state.index === this.words.length - 1
   }
 
   get currentWord() {
-    return WORDS[this.state.index]
+    return this.words[this.state.index]
   }
 
   render() {
-    const { word, hint } = this.currentWord
-
     return (
-      // <StaticQuery
-      //   query={graphql`
-      //     query SiteTitleQuery {
-      //       site {
-      //         siteMetadata {
-      //           mostFrequentWords
-      //         }
-      //       }
-      //     }
-      //   `}
-      //   render={data => (
-      //     <div>
-      //       {data.site.siteMetadata.mostFrequentWords.map(({ word }) => (
-      //         word
-      //       ))}
-      //     </div>
-      //   )}
-      // />
-      <Card raised>
-        <Card.Content style={{ height: 80 }}>
-          {hint && <Label content={hint} color="orange" ribbon />}
-          <Card.Header content={word} style={{ textAlign: "center" }} />
-          {/* <Card.Meta>{flashCardHelp}</Card.Meta> */}
-          <Card.Description>{this.props.description}</Card.Description>
-        </Card.Content>
-        <Card.Content style={{ textAlign: "center" }}>
-          <Button.Group>
-            <Button
-              icon="angle double left"
-              disabled={this.isPrevDisabled}
-              onClick={this.handleClickPrev}
-            />
-            <Button
-              content="Search!"
-              positive
-              onClick={this.handleClickSearch}
-            />
-            <Button
-              icon="angle double right"
-              disabled={this.isNextDisabled}
-              onClick={this.handleClickNext}
-            />
-          </Button.Group>
-        </Card.Content>
-      </Card>
+      <StaticQuery
+        query={graphql`
+          query AllWordsJson {
+            allFrequentWordsJson {
+              edges {
+                node {
+                  word
+                  hint
+                }
+              }
+            }
+          }
+        `}
+        render={data => {
+          if (!this.words) {
+            this.words = data.allFrequentWordsJson.edges.map(({ node }) => node);
+          }
+          const { word, hint } = this.currentWord;
+
+          return (
+            <Card raised>
+              <Card.Content style={{ height: 80 }}>
+                {hint && <Label content={hint} color="orange" ribbon />}
+                <Card.Header content={word} style={{ textAlign: "center" }} />
+                {/* <Card.Meta>{flashCardHelp}</Card.Meta> */}
+                <Card.Description>{this.props.description}</Card.Description>
+              </Card.Content>
+              <Card.Content style={{ textAlign: "center" }}>
+                <Button.Group>
+                  <Button
+                    icon="angle double left"
+                    disabled={this.isPrevDisabled}
+                    onClick={this.handleClickPrev}
+                  />
+                  <Button
+                    content="Search!"
+                    positive
+                    onClick={() => this.handleClickSearch(word)}
+                  />
+                  <Button
+                    icon="angle double right"
+                    disabled={this.isNextDisabled}
+                    onClick={this.handleClickNext}
+                  />
+                </Button.Group>
+              </Card.Content>
+            </Card>
+          )
+        }}
+      />
     )
   }
 }

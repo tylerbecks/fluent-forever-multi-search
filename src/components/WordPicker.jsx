@@ -88,7 +88,7 @@ export default class WordPicker extends PureComponent {
                   />
                   <Button
                     content="Search!"
-                    positive
+                    color="orange"
                     onClick={() => this.handleClickSearch(word)}
                   />
                   <Button

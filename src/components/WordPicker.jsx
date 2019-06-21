@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react"
 import { StaticQuery, graphql } from "gatsby"
-import { Button, Card, Label } from "semantic-ui-react"
+import { Button, Card, Input, Label } from "semantic-ui-react"
 import { searchWord } from "../utils/seachWord"
 
 const LANGUAGE = "it"
@@ -34,8 +34,8 @@ export default class WordPicker extends PureComponent {
     })
   }
 
-  handleClickSearch = (word) => {
-    searchWord(LANGUAGE, word)
+  handleClickSearch = () => {
+    searchWord(LANGUAGE, this.state.translatedWord)
   }
 
   get isPrevDisabled() {
@@ -48,6 +48,11 @@ export default class WordPicker extends PureComponent {
 
   get currentWord() {
     return this.words[this.state.index]
+  }
+
+  handleInputChange = (event) => {
+    const word = event.target.value;
+    this.setState({ translatedWord: word })
   }
 
   render() {
@@ -77,7 +82,8 @@ export default class WordPicker extends PureComponent {
                 {hint && <Label content={hint} color="orange" ribbon />}
                 <Card.Header content={word} textAlign="center" />
                 {/* <Card.Meta>{flashCardHelp}</Card.Meta> */}
-                <Card.Description>{this.props.description}</Card.Description>
+                {/* TODO remove */}
+                <Input onChange={this.handleInputChange}></Input>
               </Card.Content>
               <Card.Content textAlign="center">
                 <Button.Group>
@@ -89,7 +95,7 @@ export default class WordPicker extends PureComponent {
                   <Button
                     content="Search!"
                     color="orange"
-                    onClick={() => this.handleClickSearch(word)}
+                    onClick={this.handleClickSearch}
                   />
                   <Button
                     icon="angle double right"

@@ -12,13 +12,7 @@ export default () => (
     }}
   >
     <Container>
-      <Link
-        to="/"
-        style={{
-          color: `white`,
-          textDecoration: `none`,
-        }}
-      >
+      <Link to="/">
         <Image />
       </Link>
     </Container>

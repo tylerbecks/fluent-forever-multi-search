@@ -1,9 +1,9 @@
-import React, { PureComponent } from 'react'
+import React, { PureComponent } from "react"
 // import { StaticQuery, graphql } from "gatsby"
-import { Button, Card, Label } from 'semantic-ui-react'
-import { searchWord } from '../utils/seachWord'
+import { Button, Icon, Card, Label } from "semantic-ui-react"
+import { searchWord } from "../utils/seachWord"
 
-var LANGUAGE = 'it';
+var LANGUAGE = "it"
 
 const WORDS = [
   { word: "actor" },
@@ -31,39 +31,38 @@ export default class WordPicker extends PureComponent {
       return {
         index: index + 1,
       }
-    });
+    })
   }
 
   handleClickPrev = () => {
     this.setState(({ index }) => {
-      if (index === 0)
-        throw Error("decremented index lower than 0!")
+      if (index === 0) throw Error("decremented index lower than 0!")
 
       return {
         index: index - 1,
       }
-    });
+    })
   }
 
   handleClickSearch = () => {
-    const { word } = this.currentWord;
-    searchWord(LANGUAGE, word);
+    const { word } = this.currentWord
+    searchWord(LANGUAGE, word)
   }
 
   get isPrevDisabled() {
-    return this.state.index === 0;
+    return this.state.index === 0
   }
 
   get isNextDisabled() {
-    return this.state.index === WORDS.length - 1;
+    return this.state.index === WORDS.length - 1
   }
 
   get currentWord() {
-    return WORDS[this.state.index];
+    return WORDS[this.state.index]
   }
 
   render() {
-    const { word, hint } = this.currentWord;
+    const { word, hint } = this.currentWord
 
     return (
       // <StaticQuery
@@ -84,32 +83,31 @@ export default class WordPicker extends PureComponent {
       //     </div>
       //   )}
       // />
-      <Card>
-        <Card.Content style={{ textAlign: 'center' }}>
-          <Card.Header content={word} />
+      <Card raised>
+        <Card.Content style={{ height: 80 }}>
+          {hint && <Label content={hint} color="orange" ribbon />}
+          <Card.Header content={word} style={{ textAlign: "center" }} />
           {/* <Card.Meta>{flashCardHelp}</Card.Meta> */}
           <Card.Description>{this.props.description}</Card.Description>
         </Card.Content>
-        <Card.Content extra style={{ textAlign: 'center' }}>
-          <Label content={hint} ribbon />
-          <div>
+        <Card.Content style={{ textAlign: "center" }}>
+          <Button.Group>
+            <Button
+              icon="angle double left"
+              disabled={this.isPrevDisabled}
+              onClick={this.handleClickPrev}
+            />
             <Button
               content="Search!"
+              positive
               onClick={this.handleClickSearch}
-              style={{ marginBottom: 16 }}
             />
-          </div>
-          <Button
-            content="Prev"
-            disabled={this.isPrevDisabled}
-            onClick={this.handleClickPrev}
-            style={{ marginRight: 8 }}
-          />
-          <Button
-            content="Next"
-            disabled={this.isNextDisabled}
-            onClick={this.handleClickNext}
-          />
+            <Button
+              icon="angle double right"
+              disabled={this.isNextDisabled}
+              onClick={this.handleClickNext}
+            />
+          </Button.Group>
         </Card.Content>
       </Card>
     )

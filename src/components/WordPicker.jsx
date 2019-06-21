@@ -75,11 +75,11 @@ export default class WordPicker extends PureComponent {
             <Card raised>
               <Card.Content style={{ height: 80 }}>
                 {hint && <Label content={hint} color="orange" ribbon />}
-                <Card.Header content={word} style={{ textAlign: "center" }} />
+                <Card.Header content={word} textAlign="center" />
                 {/* <Card.Meta>{flashCardHelp}</Card.Meta> */}
                 <Card.Description>{this.props.description}</Card.Description>
               </Card.Content>
-              <Card.Content style={{ textAlign: "center" }}>
+              <Card.Content textAlign="center">
                 <Button.Group>
                   <Button
                     icon="angle double left"

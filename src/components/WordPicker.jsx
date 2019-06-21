@@ -4,6 +4,7 @@ import { Button, Card, Input, Label } from "semantic-ui-react"
 import { searchWord } from "../utils/seachWord"
 
 const LANGUAGE = "it"
+const STORE_INDEX_KEY = "currentWordIndex"
 
 /**
  * WordPicker that displays the list of the 625 most used words.
@@ -13,14 +14,24 @@ export default class WordPicker extends PureComponent {
     index: 0,
   }
 
+  componentDidMount() {
+    const index = localStorage.getItem(STORE_INDEX_KEY)
+    if (index) {
+      this.setState({ index: Number(index) })
+    }
+  }
+
   handleClickNext = () => {
     this.setState(({ index }) => {
-      if (index === this.words.length - 1)
+      if (index === this.words.length - 1) {
         throw Error("incremented index beyond length of words list!")
-
-      return {
-        index: index + 1,
       }
+
+      const newIndex = index + 1
+
+      localStorage.setItem(STORE_INDEX_KEY, newIndex)
+
+      return { index: newIndex }
     })
   }
 
@@ -28,9 +39,11 @@ export default class WordPicker extends PureComponent {
     this.setState(({ index }) => {
       if (index === 0) throw Error("decremented index lower than 0!")
 
-      return {
-        index: index - 1,
-      }
+      const newIndex = index - 1
+
+      localStorage.setItem(STORE_INDEX_KEY, newIndex)
+
+      return { index: newIndex }
     })
   }
 
@@ -50,8 +63,8 @@ export default class WordPicker extends PureComponent {
     return this.words[this.state.index]
   }
 
-  handleInputChange = (event) => {
-    const word = event.target.value;
+  handleInputChange = event => {
+    const word = event.target.value
     this.setState({ translatedWord: word })
   }
 
@@ -72,14 +85,14 @@ export default class WordPicker extends PureComponent {
         `}
         render={data => {
           if (!this.words) {
-            this.words = data.allFrequentWordsJson.edges.map(({ node }) => node);
+            this.words = data.allFrequentWordsJson.edges.map(({ node }) => node)
           }
-          const { word, hint } = this.currentWord;
+          const { word, hint } = this.currentWord
 
           return (
             <Card raised>
-              <Card.Content style={{ height: 80 }}>
-                {hint && <Label content={hint} color="orange" ribbon />}
+              <Card.Content>
+                {hint && <Label content={hint} color="green" floating />}
                 <Card.Header content={word} textAlign="center" />
                 {/* <Card.Meta>{flashCardHelp}</Card.Meta> */}
                 {/* TODO remove */}

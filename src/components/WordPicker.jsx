@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react"
 import { StaticQuery, graphql } from "gatsby"
-import { Button, Card, Input, Label } from "semantic-ui-react"
+import { Button, Card, Header, Label, Form } from "semantic-ui-react"
 import { searchWord } from "../utils/seachWord"
 
 const LANGUAGE = "it"
@@ -11,14 +11,14 @@ const STORE_INDEX_KEY = "currentWordIndex"
  */
 export default class WordPicker extends PureComponent {
   state = {
-    index: 0,
+    index: null,
+    translatedWord: "",
   }
 
   componentDidMount() {
-    const index = localStorage.getItem(STORE_INDEX_KEY)
-    if (index) {
-      this.setState({ index: Number(index) })
-    }
+    const index = localStorage.getItem(STORE_INDEX_KEY) || 1
+
+    this.setState({ index: Number(index) })
   }
 
   handleClickNext = () => {
@@ -31,7 +31,10 @@ export default class WordPicker extends PureComponent {
 
       localStorage.setItem(STORE_INDEX_KEY, newIndex)
 
-      return { index: newIndex }
+      return {
+        index: newIndex,
+        translatedWord: "",
+      }
     })
   }
 
@@ -43,11 +46,14 @@ export default class WordPicker extends PureComponent {
 
       localStorage.setItem(STORE_INDEX_KEY, newIndex)
 
-      return { index: newIndex }
+      return {
+        index: newIndex,
+        translatedWord: "",
+      }
     })
   }
 
-  handleClickSearch = () => {
+  handleSearch = () => {
     searchWord(LANGUAGE, this.state.translatedWord)
   }
 
@@ -64,8 +70,7 @@ export default class WordPicker extends PureComponent {
   }
 
   handleInputChange = event => {
-    const word = event.target.value
-    this.setState({ translatedWord: word })
+    this.setState({ translatedWord: event.target.value })
   }
 
   render() {
@@ -87,35 +92,49 @@ export default class WordPicker extends PureComponent {
           if (!this.words) {
             this.words = data.allFrequentWordsJson.edges.map(({ node }) => node)
           }
-          const { word, hint } = this.currentWord
 
           return (
             <Card raised>
               <Card.Content>
-                {hint && <Label content={hint} color="green" floating />}
-                <Card.Header content={word} textAlign="center" />
-                {/* <Card.Meta>{flashCardHelp}</Card.Meta> */}
-                {/* TODO remove */}
-                <Input onChange={this.handleInputChange}></Input>
-              </Card.Content>
-              <Card.Content textAlign="center">
-                <Button.Group>
-                  <Button
-                    icon="angle double left"
-                    disabled={this.isPrevDisabled}
-                    onClick={this.handleClickPrev}
+                <Form onSubmit={this.handleSearch}>
+                  {this.currentWord && (
+                    <>
+                      {this.currentWord.hint && (
+                        <Label
+                          content={this.currentWord.hint}
+                          color="green"
+                          floating
+                        />
+                      )}
+                      <Header
+                        content={this.currentWord.word}
+                        textAlign="center"
+                      />
+                    </>
+                  )}
+
+                  <Form.Input
+                    value={this.state.translatedWord}
+                    onChange={this.handleInputChange}
+                    placeholder="Translated Word"
                   />
-                  <Button
-                    content="Search!"
-                    color="orange"
-                    onClick={this.handleClickSearch}
-                  />
-                  <Button
-                    icon="angle double right"
-                    disabled={this.isNextDisabled}
-                    onClick={this.handleClickNext}
-                  />
-                </Button.Group>
+
+                  <Button.Group>
+                    <Button
+                      icon="angle double left"
+                      disabled={this.isPrevDisabled}
+                      onClick={this.handleClickPrev}
+                      type="button"
+                    />
+                    <Button content="Search!" color="orange" type="submit" />
+                    <Button
+                      icon="angle double right"
+                      disabled={this.isNextDisabled}
+                      onClick={this.handleClickNext}
+                      type="button"
+                    />
+                  </Button.Group>
+                </Form>
               </Card.Content>
             </Card>
           )

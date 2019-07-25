@@ -1,48 +1,66 @@
 import React, { PureComponent } from "react"
 import { StaticQuery, graphql } from "gatsby"
-import { Button, Card, Header, Label, Form } from "semantic-ui-react"
+import { Button, Card, Header, Label, Form, Flag } from "semantic-ui-react"
 import { searchWord } from "../utils/seachWord"
 
-const LANGUAGE = "it"
+const TARGET_LANGUAGE = "it"
 const STORE_INDEX_KEY = "currentWordIndex"
+const GOOGLE_TRANSLATE_KEY = "AIzaSyDLI3Dier2paFjpvYalr3m3xYjc5UkiepI"
 
 /**
  * WordPicker that displays the list of the 625 most used words.
  */
 export default class WordPicker extends PureComponent {
-  state = {
-    index: null,
-    translatedWord: "",
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      index: Number(localStorage.getItem(STORE_INDEX_KEY)) || 0,
+      translatedWord: "",
+    }
   }
 
-  componentDidMount() {
-    const index = localStorage.getItem(STORE_INDEX_KEY) || 1
+  async componentDidMount() {
+    const translatedWord = await this.fetchTranslatedWord(
+      this.currentWordObj.word
+    )
+    this.setState({ translatedWord })
+  }
 
-    this.setState({ index: Number(index) })
+  async componentDidUpdate(prevProps, prevState) {
+    if (this.state.index !== prevState.index) {
+      const translatedWord = await this.fetchTranslatedWord(
+        this.currentWordObj.word
+      )
+
+      this.setState({ translatedWord })
+    }
+  }
+
+  async fetchTranslatedWord(word) {
+    const response = await fetch(
+      `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_KEY}&q=${word}&target=${TARGET_LANGUAGE}&source=en`
+    )
+    const json = await response.json()
+    const translation = json.data.translations[0].translatedText
+
+    return translation
   }
 
   handleClickNext = () => {
-    this.setState(({ index }) => {
-      if (index === this.words.length - 1) {
-        throw Error("incremented index beyond length of words list!")
-      }
-
-      const newIndex = index + 1
-
-      localStorage.setItem(STORE_INDEX_KEY, newIndex)
-
-      return {
-        index: newIndex,
-        translatedWord: "",
-      }
-    })
+    this.changeWord(1)
   }
 
   handleClickPrev = () => {
-    this.setState(({ index }) => {
-      if (index === 0) throw Error("decremented index lower than 0!")
+    this.changeWord(-1)
+  }
 
-      const newIndex = index - 1
+  changeWord = indexChangeAmount => {
+    this.setState(({ index }) => {
+      if (index === 0) return
+      if (index === this.words.length - 1) return
+
+      const newIndex = index + indexChangeAmount
 
       localStorage.setItem(STORE_INDEX_KEY, newIndex)
 
@@ -54,7 +72,7 @@ export default class WordPicker extends PureComponent {
   }
 
   handleSearch = () => {
-    searchWord(LANGUAGE, this.state.translatedWord)
+    searchWord(TARGET_LANGUAGE, this.state.translatedWord)
   }
 
   get isPrevDisabled() {
@@ -65,12 +83,8 @@ export default class WordPicker extends PureComponent {
     return this.state.index === this.words.length - 1
   }
 
-  get currentWord() {
+  get currentWordObj() {
     return this.words[this.state.index]
-  }
-
-  handleInputChange = event => {
-    this.setState({ translatedWord: event.target.value })
   }
 
   render() {
@@ -96,29 +110,24 @@ export default class WordPicker extends PureComponent {
           return (
             <Card raised>
               <Card.Content>
-                <Form onSubmit={this.handleSearch}>
-                  {this.currentWord && (
-                    <>
-                      {this.currentWord.hint && (
-                        <Label
-                          content={this.currentWord.hint}
-                          color="green"
-                          floating
-                        />
-                      )}
-                      <Header
-                        content={this.currentWord.word}
-                        textAlign="center"
-                      />
-                    </>
+                <Header textAlign="left">
+                  <Flag name="us" />
+                  {this.currentWordObj.word}
+                  {this.currentWordObj.hint && (
+                    <Label
+                      content={this.currentWordObj.hint}
+                      color="green"
+                      circular
+                    />
                   )}
+                </Header>
+                <Header textAlign="left">
+                  <Flag name={TARGET_LANGUAGE} />
+                  {this.state.translatedWord}
+                </Header>
+                </Card.Content>
 
-                  <Form.Input
-                    value={this.state.translatedWord}
-                    onChange={this.handleInputChange}
-                    placeholder="Translated Word"
-                  />
-
+                <Card.Content extra>
                   <Button.Group>
                     <Button
                       icon="angle double left"
@@ -126,7 +135,12 @@ export default class WordPicker extends PureComponent {
                       onClick={this.handleClickPrev}
                       type="button"
                     />
-                    <Button content="Search!" color="orange" type="submit" />
+                    <Button
+                      content="Search!"
+                      color="orange"
+                      type="submit"
+                      onClick={this.handleSearch}
+                    />
                     <Button
                       icon="angle double right"
                       disabled={this.isNextDisabled}
@@ -134,7 +148,6 @@ export default class WordPicker extends PureComponent {
                       type="button"
                     />
                   </Button.Group>
-                </Form>
               </Card.Content>
             </Card>
           )

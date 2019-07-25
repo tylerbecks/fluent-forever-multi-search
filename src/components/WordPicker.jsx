@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react"
 import { StaticQuery, graphql } from "gatsby"
-import { Button, Card, Header, Label, Form, Flag } from "semantic-ui-react"
+import { Button, Card, Header, Label, Progress, Flag } from "semantic-ui-react"
 import { searchWord } from "../utils/seachWord"
 
 const TARGET_LANGUAGE = "it"
@@ -109,6 +109,18 @@ export default class WordPicker extends PureComponent {
 
           return (
             <Card raised>
+              <Progress
+                attached="top"
+                color="green"
+                total={this.words.length}
+                value={this.state.index + 1}
+              />
+              <Progress
+                attached="bottom"
+                color="green"
+                total={this.words.length}
+                value={this.state.index + 1}
+              />
               <Card.Content>
                 <Header textAlign="left">
                   <Flag name="us" />
@@ -125,29 +137,29 @@ export default class WordPicker extends PureComponent {
                   <Flag name={TARGET_LANGUAGE} />
                   {this.state.translatedWord}
                 </Header>
-                </Card.Content>
+              </Card.Content>
 
-                <Card.Content extra>
-                  <Button.Group>
-                    <Button
-                      icon="angle double left"
-                      disabled={this.isPrevDisabled}
-                      onClick={this.handleClickPrev}
-                      type="button"
-                    />
-                    <Button
-                      content="Search!"
-                      color="orange"
-                      type="submit"
-                      onClick={this.handleSearch}
-                    />
-                    <Button
-                      icon="angle double right"
-                      disabled={this.isNextDisabled}
-                      onClick={this.handleClickNext}
-                      type="button"
-                    />
-                  </Button.Group>
+              <Card.Content extra>
+                <Button.Group>
+                  <Button
+                    icon="angle double left"
+                    disabled={this.isPrevDisabled}
+                    onClick={this.handleClickPrev}
+                    type="button"
+                  />
+                  <Button
+                    content="Search!"
+                    color="orange"
+                    type="submit"
+                    onClick={this.handleSearch}
+                  />
+                  <Button
+                    icon="angle double right"
+                    disabled={this.isNextDisabled}
+                    onClick={this.handleClickNext}
+                    type="button"
+                  />
+                </Button.Group>
               </Card.Content>
             </Card>
           )

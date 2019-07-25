@@ -28,8 +28,10 @@ const Layout = ({ children }) => (
         <Container
           textAlign="center"
           style={{
+            alignItems: 'center',
             display: "flex",
             justifyContent: "center",
+            minHeight: '70vh'
           }}
         >
           <main>{children}</main>

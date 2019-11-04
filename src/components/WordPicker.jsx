@@ -48,18 +48,19 @@ export default class WordPicker extends PureComponent {
   }
 
   handleClickNext = () => {
+    if (this.state.index === this.words.length - 1) return
+
     this.changeWord(1)
   }
 
   handleClickPrev = () => {
+    if (this.state.index === 0) return
+
     this.changeWord(-1)
   }
 
   changeWord = indexChangeAmount => {
     this.setState(({ index }) => {
-      if (index === 0) return
-      if (index === this.words.length - 1) return
-
       const newIndex = index + indexChangeAmount
 
       localStorage.setItem(STORE_INDEX_KEY, newIndex)

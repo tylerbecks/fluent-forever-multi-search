@@ -5,7 +5,6 @@ import { searchWord } from "../utils/seachWord"
 
 const TARGET_LANGUAGE = "it"
 const STORE_INDEX_KEY = "currentWordIndex"
-const GOOGLE_TRANSLATE_KEY = "AIzaSyDLI3Dier2paFjpvYalr3m3xYjc5UkiepI"
 
 /**
  * WordPicker that displays the list of the 625 most used words.
@@ -39,7 +38,7 @@ export default class WordPicker extends PureComponent {
 
   async fetchTranslatedWord(word) {
     const response = await fetch(
-      `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_KEY}&q=${word}&target=${TARGET_LANGUAGE}&source=en`
+      `https://translation.googleapis.com/language/translate/v2?key=${process.env.GATSBY_GOOGLE_TRANSLATE_API_KEY}&q=${word}&target=${TARGET_LANGUAGE}&source=en`
     )
     const json = await response.json()
     const translation = json.data.translations[0].translatedText

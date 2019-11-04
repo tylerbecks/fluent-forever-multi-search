@@ -13,8 +13,14 @@ export default class WordPicker extends PureComponent {
   constructor(props) {
     super(props)
 
+    let index;
+    if (typeof window !== 'undefined') {
+      index = Number(localStorage.getItem(STORE_INDEX_KEY));
+    }
+    index = index || 0
+
     this.state = {
-      index: Number(localStorage.getItem(STORE_INDEX_KEY)) || 0,
+      index,
       translatedWord: "",
     }
   }
@@ -62,7 +68,10 @@ export default class WordPicker extends PureComponent {
     this.setState(({ index }) => {
       const newIndex = index + indexChangeAmount
 
-      localStorage.setItem(STORE_INDEX_KEY, newIndex)
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(STORE_INDEX_KEY, newIndex)
+      }
+
 
       return {
         index: newIndex,

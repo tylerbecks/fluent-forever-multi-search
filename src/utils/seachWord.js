@@ -1,3 +1,14 @@
+import days from "../data/days"
+import prepositions from "../data/prepositions"
+import pronouns from "../data/pronouns"
+
+const PREPOSITION_IMAGES_LINK =
+  "https://fluent-forever.com/wp-content/uploads/prepositionimages/prepositions.html"
+const PRONOUN_IMAGES_LINK =
+  "https://blog.fluent-forever.com/pictures-of-pronouns/"
+const DAY_IMAGES_LINK =
+  "https://blog.fluent-forever.com/images-for-the-days-of-the-week/"
+
 const LANGUAGE_TO_SEARCH_FUNC = {
   it: searchItalian,
   es: searchSpanish,
@@ -16,8 +27,8 @@ export const searchWord = (language, translatedWord, englishWord) => {
 function searchItalian(language, translatedWord, englishWord) {
   openCollinsDictionary(translatedWord, language)
   openForvo(translatedWord, language)
-  openGoogleImages(translatedWord, language)
-  openWordReference(englishWord, language)
+  openGoogleImages(language, translatedWord, englishWord)
+  openWordReferenceItalian(englishWord, language)
 }
 
 function searchSpanish(language, translatedWord, englishWord) {
@@ -40,7 +51,17 @@ function openCollinsDictionary(translatedWord, language) {
   })
 }
 
-function openGoogleImages(translatedWord, language) {
+function openGoogleImages(language, translatedWord, englishWord) {
+  if (days.includes(englishWord)) {
+    window.open(DAY_IMAGES_LINK, 'days_images')
+  }
+  if (prepositions.includes(englishWord)) {
+    window.open(PREPOSITION_IMAGES_LINK, 'preposition_images')
+  }
+  if (pronouns.includes(englishWord)) {
+    window.open(PRONOUN_IMAGES_LINK, 'pronoun_images')
+  }
+
   window.open(
     `https://www.google.${language}/search?tbm=isch&sout=1&q=${translatedWord}`,
     "images"
@@ -58,6 +79,13 @@ function openForvo(translatedWord, language) {
 function openWordReference(englishWord, language) {
   window.open(
     `https://www.wordreference.com/${language}/translation.asp?tranword=${englishWord}`,
+    "wordreference"
+  )
+}
+
+function openWordReferenceItalian(englishWord, language) {
+  window.open(
+    `https://www.wordreference.com/en${language}/${englishWord}`,
     "wordreference"
   )
 }

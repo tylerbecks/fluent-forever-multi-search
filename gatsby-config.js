@@ -8,6 +8,7 @@ module.exports = {
     `gatsby-plugin-typescript`,
     `gatsby-plugin-react-helmet`,
     `gatsby-transformer-json`,
+    `gatsby-plugin-jss`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {

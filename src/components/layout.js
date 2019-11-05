@@ -1,9 +1,19 @@
 import React from "react"
 import PropTypes from "prop-types"
 import { StaticQuery, graphql } from "gatsby"
+import injectSheet from "react-jss"
 import Header from "./header"
 import { Container } from "semantic-ui-react"
 import "./layout.css"
+
+const styles = {
+  container: {
+    alignItems: "center",
+    display: [["flex"], '!important'],
+    justifyContent: "center",
+    minHeight: "70vh",
+  },
+}
 
 /**
  * Layout component that queries for data
@@ -11,7 +21,7 @@ import "./layout.css"
  *
  * See: https://www.gatsbyjs.org/docs/static-query/
  */
-const Layout = ({ children }) => (
+const Layout = ({ classes, children }) => (
   <StaticQuery
     query={graphql`
       query SiteTitleQuery {
@@ -25,15 +35,7 @@ const Layout = ({ children }) => (
     render={() => (
       <>
         <Header />
-        <Container
-          textAlign="center"
-          style={{
-            alignItems: 'center',
-            display: "flex",
-            justifyContent: "center",
-            minHeight: '70vh'
-          }}
-        >
+        <Container className={classes.container} textAlign="center">
           <main>{children}</main>
         </Container>
       </>
@@ -45,4 +47,4 @@ Layout.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-export default Layout
+export default injectSheet(styles)(Layout)

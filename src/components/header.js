@@ -4,6 +4,7 @@ import { Container } from "semantic-ui-react"
 import injectSheet from 'react-jss'
 import { GREEN } from '../consts/styles'
 import Image from './image'
+import LanguagePicker from './LanguagePicker'
 
 const styles = {
   header: {
@@ -18,6 +19,7 @@ const Header = ({ classes }) => (
       <Link to="/">
         <Image />
       </Link>
+      <LanguagePicker />
     </Container>
   </header>
 )

@@ -3,21 +3,16 @@ import React, { useState } from "react"
 import Layout from "../components/layout"
 import WordSearchTool from "../components/WordSearchTool"
 import SEO from "../components/seo"
+import { getItem, setItem } from '../utils/store'
 
 const STORE_LANGUAGE_KEY = "language"
 
 const IndexPage = () => {
-  const storedLanguage =
-    typeof window !== "undefined" && localStorage.getItem(STORE_LANGUAGE_KEY)
-
-  const [language, setLanguage] = useState(storedLanguage || "es")
+  const [language, setLanguage] = useState(getDefaultLanguage())
 
   const onChangeLanguage = newLanguage => {
     setLanguage(newLanguage)
-
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORE_LANGUAGE_KEY, newLanguage)
-    }
+    setItem(STORE_LANGUAGE_KEY, newLanguage)
   }
 
   return (
@@ -26,6 +21,11 @@ const IndexPage = () => {
       <WordSearchTool language={language} />
     </Layout>
   )
+}
+
+const getDefaultLanguage = () => {
+  const storedLanguage = getItem(STORE_LANGUAGE_KEY)
+  return storedLanguage || "es"
 }
 
 export default IndexPage

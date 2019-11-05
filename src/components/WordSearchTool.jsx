@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { StaticQuery, graphql } from "gatsby"
 import { Button, Card, Header, Label, Progress, Flag } from "semantic-ui-react"
 import { searchWord } from "../utils/seachWord"
+import { getItem, setItem } from "../utils/store"
 
 const STORE_INDEX_KEY = "currentWordIndex"
 let englishWords
@@ -29,11 +30,8 @@ export default ({ language }) => {
   }
 
   const changeWord = newIndex => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORE_INDEX_KEY, newIndex)
-    }
-
     setIndex(newIndex)
+    setItem(STORE_INDEX_KEY, newIndex)
   }
 
   const handleSearch = () => {
@@ -120,10 +118,7 @@ export default ({ language }) => {
 }
 
 const getInitialIndex = () => {
-  const storedIndex =
-    typeof window !== "undefined" &&
-    Number(localStorage.getItem(STORE_INDEX_KEY))
-
+  const storedIndex = Number(getItem(STORE_INDEX_KEY))
   return storedIndex || 0
 }
 

@@ -1,5 +1,5 @@
 import React from "react"
-import { Button, Card, Header, Label, Progress, Flag } from "semantic-ui-react"
+import { Button, Card, Header, Label, Flag } from "semantic-ui-react"
 import { searchWord } from "../utils/seachWord"
 
 export default ({
@@ -30,18 +30,6 @@ export default ({
 
   return (
     <Card raised>
-      <Progress
-        attached="top"
-        color="green"
-        total={totalWordCount}
-        value={index + 1}
-      />
-      <Progress
-        attached="bottom"
-        color="green"
-        total={totalWordCount}
-        value={index + 1}
-      />
       <Card.Content>
         <Header textAlign="left">
           <Flag name="us" />

@@ -1,6 +1,8 @@
 import "semantic-ui-css/semantic.min.css"
 import React, { useState, useEffect } from "react"
 import { StaticQuery, graphql } from "gatsby"
+import { Progress } from "semantic-ui-react"
+import injectSheet from "react-jss"
 import Layout from "../components/layout"
 import WordSearchTool from "../components/WordSearchTool"
 import SEO from "../components/seo"
@@ -9,9 +11,18 @@ import { getItem, setItem } from "../utils/store"
 const STORE_LANGUAGE_KEY = "language"
 const STORE_INDEX_KEY = "currentWordIndex"
 
+const styles = {
+  progress: {
+    bottom: 0,
+    margin: [[0], "!important"],
+    position: [["absolute"], "!important"],
+    width: "100%",
+  },
+}
+
 let englishWords
 
-const IndexPage = () => {
+const IndexPage = ({ classes }) => {
   const [language, setLanguage] = useState(getDefaultLanguage())
   const [index, setIndex] = useState(getInitialIndex())
   const [translatedWord, setTranslatedWord] = useState("")
@@ -29,7 +40,7 @@ const IndexPage = () => {
     setItem(STORE_LANGUAGE_KEY, newLanguage)
   }
 
-  const onChangeIndex = (newIndex) => {
+  const onChangeIndex = newIndex => {
     setIndex(newIndex)
     setItem(STORE_INDEX_KEY, newIndex)
   }
@@ -67,6 +78,13 @@ const IndexPage = () => {
               totalWordCount={englishWords.length}
               translatedWord={translatedWord}
             />
+            <Progress
+              className={classes.progress}
+              color="green"
+              total={englishWords.length}
+              value={index + 1}
+              progress="value"
+            />
           </Layout>
         )
       }}
@@ -94,4 +112,4 @@ const fetchTranslatedWord = async (englishWord, targetLanguage) => {
   return translation
 }
 
-export default IndexPage
+export default injectSheet(styles)(IndexPage)

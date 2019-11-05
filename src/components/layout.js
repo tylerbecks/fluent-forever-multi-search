@@ -10,6 +10,7 @@ const styles = {
   container: {
     alignItems: "center",
     display: [["flex"], "!important"],
+    flexDirection: 'column',
     justifyContent: "center",
     minHeight: "70vh",
   },
@@ -36,7 +37,7 @@ const Layout = ({ classes, children, language, onChangeLanguage }) => (
       <>
         <Header language={language} onChangeLanguage={onChangeLanguage} />
         <Container className={classes.container} textAlign="center">
-          <main>{children}</main>
+          {children}
         </Container>
       </>
     )}

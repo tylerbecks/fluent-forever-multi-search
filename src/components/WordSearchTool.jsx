@@ -1,5 +1,6 @@
 import React from "react"
 import { Button, Card, Header, Label, Flag } from "semantic-ui-react"
+import TipTooltip from './TipTooltip'
 import { searchWord } from "../utils/seachWord"
 
 export default ({
@@ -8,6 +9,7 @@ export default ({
   index,
   language,
   onChangeIndex,
+  tip,
   totalWordCount,
   translatedWord,
 }) => {
@@ -35,6 +37,7 @@ export default ({
           <Flag name="us" />
           {englishWord}
           {hint && <Label content={hint} color="green" circular />}
+          {tip && <TipTooltip tip={tip} />}
         </Header>
         <Header textAlign="left">
           <Flag name={language} />

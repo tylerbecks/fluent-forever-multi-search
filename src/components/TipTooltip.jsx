@@ -1,0 +1,29 @@
+import React from "react"
+import { Icon, Popup } from "semantic-ui-react"
+import injectSheet from "react-jss"
+
+const styles = {
+  icon: {
+    float: 'right',
+    fontSize: [['0.6em'], '!important']
+  }
+}
+
+const CATEGORY_MESSAGE =
+  "Learn these words word by using 2-3 other pictures/words on your flashcards (i.e. ‘animal = dog, cat, fish…’)"
+
+const TipTooltip = ({ classes, tip }) => {
+  let content;
+  if (tip === 'Category Word') {
+    content = CATEGORY_MESSAGE
+  }
+  return (
+    <Popup
+      trigger={<Icon circular name="info" className={classes.icon} />}
+      header={tip}
+      content={content}
+    />
+  )
+}
+
+export default injectSheet(styles)(TipTooltip)

@@ -54,6 +54,7 @@ const IndexPage = ({ classes }) => {
               node {
                 word
                 hint
+                tip
               }
             }
           }
@@ -64,7 +65,7 @@ const IndexPage = ({ classes }) => {
           englishWords = data.allFrequentWordsJson.edges.map(({ node }) => node)
         }
 
-        const { hint, word: englishWord } = englishWords[index]
+        const { hint, word: englishWord, tip } = englishWords[index]
 
         return (
           <Layout language={language} onChangeLanguage={onChangeLanguage}>
@@ -75,6 +76,7 @@ const IndexPage = ({ classes }) => {
               index={index}
               language={language}
               onChangeIndex={onChangeIndex}
+              tip={tip}
               totalWordCount={englishWords.length}
               translatedWord={translatedWord}
             />

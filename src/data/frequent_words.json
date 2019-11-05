@@ -6,7 +6,7 @@
   { "word": "air" },
   { "word": "airport" },
   { "word": "alive" },
-  { "word": "animal" },
+  { "word": "animal", "tip": "Category Word" },
   { "word": "apartment" },
   { "word": "apple" },
   { "word": "April" },

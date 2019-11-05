@@ -34,7 +34,7 @@ const TipTooltip = ({ classes, tip }) => {
       content = PRONOUN_MESSAGE
       break
     default:
-      throw error("tip unknown")
+      throw Error("tip unknown")
   }
 
   return (

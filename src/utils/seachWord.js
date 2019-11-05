@@ -52,13 +52,15 @@ function openCollinsDictionary(translatedWord, language) {
 }
 
 function openGoogleImages(language, translatedWord, englishWord) {
-  if (days.includes(englishWord)) {
+  const lowerCaseEnglishWord = englishWord.toLowerCase()
+
+  if (days.includes(lowerCaseEnglishWord)) {
     window.open(DAY_IMAGES_LINK, 'days_images')
   }
-  if (prepositions.includes(englishWord)) {
+  if (prepositions.includes(lowerCaseEnglishWord)) {
     window.open(PREPOSITION_IMAGES_LINK, 'preposition_images')
   }
-  if (pronouns.includes(englishWord)) {
+  if (pronouns.includes(lowerCaseEnglishWord)) {
     window.open(PRONOUN_IMAGES_LINK, 'pronoun_images')
   }
 

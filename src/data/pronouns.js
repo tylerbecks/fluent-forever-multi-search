@@ -1,1 +1,1 @@
-export default ["I", "we", "you", "he", "she", "it", "they", "me"]
+export default ["i", "we", "you", "he", "she", "it", "they", "me"]

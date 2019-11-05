@@ -1,179 +1,140 @@
-import React, { PureComponent } from "react"
+import React, { useState, useEffect } from "react"
 import { StaticQuery, graphql } from "gatsby"
 import { Button, Card, Header, Label, Progress, Flag } from "semantic-ui-react"
 import { searchWord } from "../utils/seachWord"
 
 const TARGET_LANGUAGE = "it"
 const STORE_INDEX_KEY = "currentWordIndex"
+let words
 
-/**
- * WordPicker that displays the list of the 625 most used words.
- */
-export default class WordPicker extends PureComponent {
-  constructor(props) {
-    super(props)
+export default () => {
+  const [index, setIndex] = useState(getInitialIndex())
+  const [translatedWord, setTranslatedWord] = useState("")
 
-    let index;
-    if (typeof window !== 'undefined') {
-      index = Number(localStorage.getItem(STORE_INDEX_KEY));
+  useEffect(() => {
+    ;(async () => {
+      const { word } = words[index]
+      const translatedWord = await fetchTranslatedWord(word)
+      setTranslatedWord(translatedWord)
+    })()
+  }, [index])
+
+  const handleClickNext = () => {
+    if (index === words.length - 1) return
+    changeWord(index + 1)
+  }
+
+  const handleClickPrev = () => {
+    if (index === 0) return
+    changeWord(index - 1)
+  }
+
+  const changeWord = newIndex => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem(STORE_INDEX_KEY, newIndex)
     }
-    index = index || 0
 
-    this.state = {
-      index,
-      translatedWord: "",
-    }
+    setIndex(newIndex)
   }
 
-  async componentDidMount() {
-    const translatedWord = await this.fetchTranslatedWord(
-      this.currentWordObj.word
-    )
-    this.setState({ translatedWord })
+  const handleSearch = () => {
+    searchWord(TARGET_LANGUAGE, translatedWord)
   }
 
-  async componentDidUpdate(prevProps, prevState) {
-    if (this.state.index !== prevState.index) {
-      const translatedWord = await this.fetchTranslatedWord(
-        this.currentWordObj.word
-      )
+  const isPrevDisabled = () => index === 0
+  const isNextDisabled = () => index === words.length - 1
 
-      this.setState({ translatedWord })
-    }
-  }
-
-  async fetchTranslatedWord(word) {
-    const response = await fetch(
-      `https://translation.googleapis.com/language/translate/v2?key=${process.env.GATSBY_GOOGLE_TRANSLATE_API_KEY}&q=${word}&target=${TARGET_LANGUAGE}&source=en`
-    )
-    const json = await response.json()
-    const translation = json.data.translations[0].translatedText
-
-    return translation
-  }
-
-  handleClickNext = () => {
-    if (this.state.index === this.words.length - 1) return
-
-    this.changeWord(1)
-  }
-
-  handleClickPrev = () => {
-    if (this.state.index === 0) return
-
-    this.changeWord(-1)
-  }
-
-  changeWord = indexChangeAmount => {
-    this.setState(({ index }) => {
-      const newIndex = index + indexChangeAmount
-
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(STORE_INDEX_KEY, newIndex)
-      }
-
-
-      return {
-        index: newIndex,
-        translatedWord: "",
-      }
-    })
-  }
-
-  handleSearch = () => {
-    searchWord(TARGET_LANGUAGE, this.state.translatedWord)
-  }
-
-  get isPrevDisabled() {
-    return this.state.index === 0
-  }
-
-  get isNextDisabled() {
-    return this.state.index === this.words.length - 1
-  }
-
-  get currentWordObj() {
-    return this.words[this.state.index]
-  }
-
-  render() {
-    return (
-      <StaticQuery
-        query={graphql`
-          query AllWordsJson {
-            allFrequentWordsJson {
-              edges {
-                node {
-                  word
-                  hint
-                }
+  return (
+    <StaticQuery
+      query={graphql`
+        query AllWordsJson2 {
+          allFrequentWordsJson {
+            edges {
+              node {
+                word
+                hint
               }
             }
           }
-        `}
-        render={data => {
-          if (!this.words) {
-            this.words = data.allFrequentWordsJson.edges.map(({ node }) => node)
-          }
+        }
+      `}
+      render={data => {
+        if (!words) {
+          words = data.allFrequentWordsJson.edges.map(({ node }) => node)
+        }
 
-          return (
-            <Card raised>
-              <Progress
-                attached="top"
-                color="green"
-                total={this.words.length}
-                value={this.state.index + 1}
-              />
-              <Progress
-                attached="bottom"
-                color="green"
-                total={this.words.length}
-                value={this.state.index + 1}
-              />
-              <Card.Content>
-                <Header textAlign="left">
-                  <Flag name="us" />
-                  {this.currentWordObj.word}
-                  {this.currentWordObj.hint && (
-                    <Label
-                      content={this.currentWordObj.hint}
-                      color="green"
-                      circular
-                    />
-                  )}
-                </Header>
-                <Header textAlign="left">
-                  <Flag name={TARGET_LANGUAGE} />
-                  {this.state.translatedWord}
-                </Header>
-              </Card.Content>
+        const { hint, word } = words[index]
 
-              <Card.Content extra>
-                <Button.Group>
-                  <Button
-                    icon="angle double left"
-                    disabled={this.isPrevDisabled}
-                    onClick={this.handleClickPrev}
-                    type="button"
-                  />
-                  <Button
-                    content="Search!"
-                    color="orange"
-                    type="submit"
-                    onClick={this.handleSearch}
-                  />
-                  <Button
-                    icon="angle double right"
-                    disabled={this.isNextDisabled}
-                    onClick={this.handleClickNext}
-                    type="button"
-                  />
-                </Button.Group>
-              </Card.Content>
-            </Card>
-          )
-        }}
-      />
-    )
+        return (
+          <Card raised>
+            <Progress
+              attached="top"
+              color="green"
+              total={words.length}
+              value={index + 1}
+            />
+            <Progress
+              attached="bottom"
+              color="green"
+              total={words.length}
+              value={index + 1}
+            />
+            <Card.Content>
+              <Header textAlign="left">
+                <Flag name="us" />
+                {word}
+                {hint && <Label content={hint} color="green" circular />}
+              </Header>
+              <Header textAlign="left">
+                <Flag name={TARGET_LANGUAGE} />
+                {translatedWord}
+              </Header>
+            </Card.Content>
+
+            <Card.Content extra>
+              <Button.Group>
+                <Button
+                  icon="angle double left"
+                  disabled={isPrevDisabled()}
+                  onClick={handleClickPrev}
+                  type="button"
+                />
+                <Button
+                  content="Search!"
+                  color="orange"
+                  type="submit"
+                  onClick={handleSearch}
+                />
+                <Button
+                  icon="angle double right"
+                  disabled={isNextDisabled()}
+                  onClick={handleClickNext}
+                  type="button"
+                />
+              </Button.Group>
+            </Card.Content>
+          </Card>
+        )
+      }}
+    />
+  )
+}
+
+const getInitialIndex = () => {
+  let initialIndex
+  if (typeof window !== "undefined") {
+    initialIndex = Number(localStorage.getItem(STORE_INDEX_KEY))
   }
+
+  return initialIndex || 0
+}
+
+const fetchTranslatedWord = async word => {
+  const response = await fetch(
+    `https://translation.googleapis.com/language/translate/v2?key=${process.env.GATSBY_GOOGLE_TRANSLATE_API_KEY}&q=${word}&target=${TARGET_LANGUAGE}&source=en`
+  )
+  const json = await response.json()
+  const translation = json.data.translations[0].translatedText
+
+  return translation
 }

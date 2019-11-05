@@ -3,24 +3,23 @@ import { StaticQuery, graphql } from "gatsby"
 import { Button, Card, Header, Label, Progress, Flag } from "semantic-ui-react"
 import { searchWord } from "../utils/seachWord"
 
-const TARGET_LANGUAGE = "it"
 const STORE_INDEX_KEY = "currentWordIndex"
-let words
+let englishWords
 
-export default () => {
+export default ({ language }) => {
   const [index, setIndex] = useState(getInitialIndex())
   const [translatedWord, setTranslatedWord] = useState("")
+  let englishWord = englishWords && englishWords[index].word
 
   useEffect(() => {
     ;(async () => {
-      const { word } = words[index]
-      const translatedWord = await fetchTranslatedWord(word)
+      const translatedWord = await fetchTranslatedWord(englishWord, language)
       setTranslatedWord(translatedWord)
     })()
-  }, [index])
+  }, [index, language])
 
   const handleClickNext = () => {
-    if (index === words.length - 1) return
+    if (index === englishWords.length - 1) return
     changeWord(index + 1)
   }
 
@@ -38,16 +37,16 @@ export default () => {
   }
 
   const handleSearch = () => {
-    searchWord(TARGET_LANGUAGE, translatedWord)
+    searchWord(language, translatedWord, englishWord)
   }
 
   const isPrevDisabled = () => index === 0
-  const isNextDisabled = () => index === words.length - 1
+  const isNextDisabled = () => index === englishWords.length - 1
 
   return (
     <StaticQuery
       query={graphql`
-        query AllWordsJson2 {
+        query AllWordsJson {
           allFrequentWordsJson {
             edges {
               node {
@@ -59,34 +58,34 @@ export default () => {
         }
       `}
       render={data => {
-        if (!words) {
-          words = data.allFrequentWordsJson.edges.map(({ node }) => node)
+        if (!englishWords) {
+          englishWords = data.allFrequentWordsJson.edges.map(({ node }) => node)
         }
 
-        const { hint, word } = words[index]
+        const { hint, word: englishWord } = englishWords[index]
 
         return (
           <Card raised>
             <Progress
               attached="top"
               color="green"
-              total={words.length}
+              total={englishWords.length}
               value={index + 1}
             />
             <Progress
               attached="bottom"
               color="green"
-              total={words.length}
+              total={englishWords.length}
               value={index + 1}
             />
             <Card.Content>
               <Header textAlign="left">
                 <Flag name="us" />
-                {word}
+                {englishWord}
                 {hint && <Label content={hint} color="green" circular />}
               </Header>
               <Header textAlign="left">
-                <Flag name={TARGET_LANGUAGE} />
+                <Flag name={language} />
                 {translatedWord}
               </Header>
             </Card.Content>
@@ -129,9 +128,9 @@ const getInitialIndex = () => {
   return initialIndex || 0
 }
 
-const fetchTranslatedWord = async word => {
+const fetchTranslatedWord = async (englishWord, targetLanguage) => {
   const response = await fetch(
-    `https://translation.googleapis.com/language/translate/v2?key=${process.env.GATSBY_GOOGLE_TRANSLATE_API_KEY}&q=${word}&target=${TARGET_LANGUAGE}&source=en`
+    `https://translation.googleapis.com/language/translate/v2?key=${process.env.GATSBY_GOOGLE_TRANSLATE_API_KEY}&q=${englishWord}&target=${targetLanguage}&source=en`
   )
   const json = await response.json()
   const translation = json.data.translations[0].translatedText

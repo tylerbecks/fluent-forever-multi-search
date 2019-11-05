@@ -9,7 +9,7 @@ import "./layout.css"
 const styles = {
   container: {
     alignItems: "center",
-    display: [["flex"], '!important'],
+    display: [["flex"], "!important"],
     justifyContent: "center",
     minHeight: "70vh",
   },
@@ -21,7 +21,7 @@ const styles = {
  *
  * See: https://www.gatsbyjs.org/docs/static-query/
  */
-const Layout = ({ classes, children }) => (
+const Layout = ({ classes, children, language, onChangeLanguage }) => (
   <StaticQuery
     query={graphql`
       query SiteTitleQuery {
@@ -34,7 +34,7 @@ const Layout = ({ classes, children }) => (
     `}
     render={() => (
       <>
-        <Header />
+        <Header language={language} onChangeLanguage={onChangeLanguage} />
         <Container className={classes.container} textAlign="center">
           <main>{children}</main>
         </Container>

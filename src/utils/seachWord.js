@@ -1,55 +1,63 @@
 const LANGUAGE_TO_SEARCH_FUNC = {
   it: searchItalian,
+  es: searchSpanish,
 }
 
 const LANGUAGE_HASH = {
-  it: 'italian'
+  es: "spanish",
+  it: "italian",
 }
 
-export const searchWord = (language, word) => {
+export const searchWord = (language, translatedWord, englishWord) => {
   const searchFunc = LANGUAGE_TO_SEARCH_FUNC[language]
-  searchFunc(language, word)
+  searchFunc(language, translatedWord, englishWord)
 }
 
-function searchItalian(language, word) {
-  openCollinsDictionary(word, language)
-  openForvo(word, language);
-  openGoogleImages(word, language);
+function searchItalian(language, translatedWord, englishWord) {
+  openCollinsDictionary(translatedWord, language)
+  openForvo(translatedWord, language)
+  openGoogleImages(translatedWord, language)
+  openWordReference(englishWord, language)
+}
+
+function searchSpanish(language, translatedWord, englishWord) {
+  openForvo(translatedWord, language)
+  openGoogleImages(translatedWord, language)
+  openWordReference(englishWord, language)
 }
 
 // a website that has IPA definitions of words
-function openCollinsDictionary(word, language) {
-  const longLanguage = LANGUAGE_HASH[language];
-  const wordParts = word.split(' ');
+function openCollinsDictionary(translatedWord, language) {
+  const longLanguage = LANGUAGE_HASH[language]
+  const wordParts = translatedWord.split(" ")
   // Collins Dictionary only has records for individual words.
-  // For example, if word is "Happy Birthday", Collins will not work.
+  // For example, if translatedWord is "Happy Birthday", Collins will not work.
   // So, instead, search for "Happy" and search for "Birthday"
-  wordParts.forEach((wordPart) => {
+  wordParts.forEach(wordPart => {
     window.open(
       `https://www.collinsdictionary.com/dictionary/${longLanguage}-english/${wordPart}`
-    );
+    )
   })
 }
 
-function openGoogleImages(word, language) {
+function openGoogleImages(translatedWord, language) {
   window.open(
-    `https://www.google.${language}/search?tbm=isch&sout=1&q=${word}`,
-    'images'
-  );
+    `https://www.google.${language}/search?tbm=isch&sout=1&q=${translatedWord}`,
+    "images"
+  )
 }
 
 // a website that has recordings of native speakers pronouncing words
-function openForvo(word, language) {
-  window.open(`http://www.forvo.com/word/${word}/#${language}`, 'forvo');
+function openForvo(translatedWord, language) {
+  window.open(
+    `http://www.forvo.com/word/${translatedWord}/#${language}`,
+    "forvo"
+  )
 }
 
-// function openWordReference(word) {
-//   window.open(`http://www.wordreference.com/iten/${word}`, 'wordreference');
-// }
-
-// function openGoogleTranslate(word, language) {
-//   window.open(
-//     `https://translate.google.com/#view=home&op=translate&sl=${language}&tl=en&text=${word}`,
-//     'translate'
-//   );
-// }
+function openWordReference(englishWord, language) {
+  window.open(
+    `https://www.wordreference.com/${language}/translation.asp?tranword=${englishWord}`,
+    "wordreference"
+  )
+}

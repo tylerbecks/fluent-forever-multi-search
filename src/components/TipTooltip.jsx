@@ -1,13 +1,13 @@
 import React from "react"
 import { Icon, Popup } from "semantic-ui-react"
-import injectSheet from "react-jss"
+import { createUseStyles } from "react-jss"
 
-const styles = {
+const useStyles = createUseStyles({
   icon: {
     float: "right",
     fontSize: [["0.6em"], "!important"],
   },
-}
+})
 
 const CATEGORY_MESSAGE =
   "Learn these words word by using 2-3 other pictures/words on your flashcards (i.e. ‘animal = dog, cat, fish…’)"
@@ -18,7 +18,7 @@ const TIME_MESSAGE =
 const PRONOUN_MESSAGE =
   "Make sure you read about these in your grammar book before adding them. Languages divide their pronouns into many categories. Hungarian, for instance, has six words for “you” (singular informal, singular formal (for acquaintances), singular official (for teachers, policemen, bureaucrats), plural informal, etc.), and depending upon how you count, Japanese either has no pronouns or tons of pronouns. We’ll need to have some pronouns now in order to deal with grammar later, so you’ll want to find at least a few words to refer to yourself or someone else. You’ll find a good explanation of pronouns (and a list of them) in the beginning of your grammar book. Note that you don’t yet need him, her, his, their, etc. We’ll get them later, when we discuss grammar."
 
-const TipTooltip = ({ classes, tip }) => {
+export default ({ tip }) => {
   let content
   switch (tip) {
     case "Category Word":
@@ -37,6 +37,8 @@ const TipTooltip = ({ classes, tip }) => {
       throw Error("tip unknown")
   }
 
+  const classes = useStyles()
+
   return (
     <Popup
       trigger={<Icon circular name="info" className={classes.icon} />}
@@ -45,5 +47,3 @@ const TipTooltip = ({ classes, tip }) => {
     />
   )
 }
-
-export default injectSheet(styles)(TipTooltip)

@@ -2,7 +2,7 @@ import "semantic-ui-css/semantic.min.css"
 import React, { useState, useEffect } from "react"
 import { StaticQuery, graphql } from "gatsby"
 import { Progress } from "semantic-ui-react"
-import injectSheet from "react-jss"
+import { createUseStyles } from "react-jss"
 import Layout from "../components/layout"
 import WordSearchTool from "../components/WordSearchTool"
 import SEO from "../components/seo"
@@ -11,22 +11,24 @@ import { getItem, setItem } from "../utils/store"
 const STORE_LANGUAGE_KEY = "language"
 const STORE_INDEX_KEY = "currentWordIndex"
 
-const styles = {
+const useStyles = createUseStyles({
   progress: {
     bottom: 0,
     margin: [[0], "!important"],
     position: [["absolute"], "!important"],
     width: "100%",
   },
-}
+})
 
 let englishWords
 
-const IndexPage = ({ classes }) => {
+export default () => {
   const [language, setLanguage] = useState(getDefaultLanguage())
   const [index, setIndex] = useState(getInitialIndex())
   const [translatedWord, setTranslatedWord] = useState("")
   let englishWord = englishWords && englishWords[index].word
+
+  const classes = useStyles()
 
   useEffect(() => {
     ;(async () => {
@@ -113,5 +115,3 @@ const fetchTranslatedWord = async (englishWord, targetLanguage) => {
 
   return translation
 }
-
-export default injectSheet(styles)(IndexPage)

@@ -120,12 +120,11 @@ export default ({ language }) => {
 }
 
 const getInitialIndex = () => {
-  let initialIndex
-  if (typeof window !== "undefined") {
-    initialIndex = Number(localStorage.getItem(STORE_INDEX_KEY))
-  }
+  const storedIndex =
+    typeof window !== "undefined" &&
+    Number(localStorage.getItem(STORE_INDEX_KEY))
 
-  return initialIndex || 0
+  return storedIndex || 0
 }
 
 const fetchTranslatedWord = async (englishWord, targetLanguage) => {
